@@ -28,13 +28,10 @@ jobs:
         run: |
           npm run build
  
-      - name: Sincronizar Capacitor con Android (Blindado)
+      - name: Verificar Archivos Pre-compilados
         run: |
-          npx cap telemetry off
-          rm -rf android
-          npx cap add android
-          npx cap sync android --no-git
-
+          ls -R android/app/src/main/assets
+ 
       - name: Configurar Java 17
         uses: actions/setup-java@v4
         with:

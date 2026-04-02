@@ -1,0 +1,13 @@
+{
+	"appId": "com.deportelibre.app",
+	"appName": "DeporteLibre",
+	"webDir": "dist",
+	"server": {
+		"androidScheme": "https"
+	},
+	"plugins": {
+		"CapacitorHttp": {
+			"enabled": true
+		}
+	}
+}
