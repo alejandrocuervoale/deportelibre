@@ -1,0 +1,7 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="1" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Pluto_TV_Logo_2020.svg/2560px-Pluto_TV_Logo_2020.svg.png" group-title="Noticias",Canal Noticias M3U
+https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
+#EXTINF:-1 tvg-id="2" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/4/4b/Telesur_logo.png" group-title="Deportes",Canal Deportes M3U
+https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
+#EXTINF:-1 tvg-id="3" group-title="Cine",Canal Cine M3U (Sin Logo)
+https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
