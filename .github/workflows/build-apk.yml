@@ -42,7 +42,16 @@ jobs:
         working-directory: ./android
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Subir Registros de Error (En caso de fallo)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-build-reports
+          path: |
+            android/app/build/reports/
+            android/app/build/test-results/
 
       - name: Subir APK Generado
         uses: actions/upload-artifact@v4
