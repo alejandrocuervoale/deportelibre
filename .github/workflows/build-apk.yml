@@ -28,6 +28,10 @@ jobs:
         run: |
           npm run build
  
+      - name: Sincronizar con Capacitor (Cap Copy)
+        run: |
+          npx cap sync android
+
       - name: Verificar Archivos Pre-compilados
         run: |
           ls -R android/app/src/main/assets
