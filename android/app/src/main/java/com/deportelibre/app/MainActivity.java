@@ -1,4 +1,4 @@
-package com.ani.flix;
+package com.deportelibre.app;
 
 import com.getcapacitor.BridgeActivity;
 
