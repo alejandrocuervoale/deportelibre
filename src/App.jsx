@@ -8,7 +8,7 @@ import { fetchAndParseM3U } from './utils/m3uParser';
 import { getPopularMovies, getPopularSeries } from './api/stremio';
 import { universalFetch } from './utils/fetchAdapter';
 
-const CATEGORIAS = ["Películas", "Series", "Canales TV", "Deportes"];
+const CATEGORIAS = ["Favoritos", "Películas", "Series", "Canales TV", "Deportes"];
 
 const M3U_SOURCES = [
   { url: 'https://gist.githubusercontent.com/frantdse/f6989518c73826ade6734c63c367af4c/raw/', category: 'Deportes' },
@@ -33,10 +33,16 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [activeCategory, setActiveCategory] = useState("Películas");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('ani_flix_favorites');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [isNavigatingCategories, setIsNavigatingCategories] = useState(false);
   const [focusedCategoryIndex, setFocusedCategoryIndex] = useState(0);
   const playerRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   useEffect(() => {
     async function fetchAllContent() {
@@ -155,9 +161,29 @@ function App() {
     fetchAllContent();
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('ani_flix_favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const toggleFavorite = useCallback((id) => {
+    setFavorites(prev => 
+      prev.includes(id) ? prev.filter(fid => fid !== id) : [...prev, id]
+    );
+  }, []);
+
   // 📺 Navegación por Control Remoto (D-Pad)
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // 0. Si el usuario está escribiendo en el buscador, no navegar
+      if (document.activeElement.tagName === 'INPUT') {
+        if (e.key === 'Enter') {
+            setIsNavigatingCategories(false);
+            setFocusedIndex(0);
+            document.activeElement.blur();
+        }
+        return;
+      }
+
       // 1. Manejo de Navegación por Categorías (Tabs)
       if (isNavigatingCategories) {
         if (e.key === 'ArrowRight') {
@@ -168,6 +194,8 @@ function App() {
           setIsNavigatingCategories(false);
           setFocusedIndex(0);
           setActiveCategory(CATEGORIAS[focusedCategoryIndex]);
+        } else if (e.key === 'ArrowUp') {
+           if (searchInputRef.current) searchInputRef.current.focus();
         } else if (e.key === 'Enter') {
           setActiveCategory(CATEGORIAS[focusedCategoryIndex]);
           setIsNavigatingCategories(false);
@@ -177,8 +205,12 @@ function App() {
       }
 
       // 2. Manejo de Navegación por Grilla
-      const filtered = matches.filter(m => m.categoria === activeCategory);
-      if (filtered.length === 0) return;
+      const filtered = matches.filter(m => {
+        const matchesSearch = (m.equipo_local || "").toLowerCase().includes(searchTerm.toLowerCase());
+        if (activeCategory === "Favoritos") return favorites.includes(m.id) && matchesSearch;
+        return m.categoria === activeCategory && matchesSearch;
+      });
+      if (filtered.length === 0 && e.key !== 'ArrowUp') return;
 
       let newIndex = focusedIndex;
       const columns = 4; // Ajustar según grid-template-columns
@@ -197,7 +229,9 @@ function App() {
       }
       
       if (e.key === 'Enter') {
-        handleSelectMatch(filtered[focusedIndex]);
+        if (filtered[focusedIndex]) {
+            handleSelectMatch(filtered[focusedIndex]);
+        }
         return;
       }
 
@@ -205,6 +239,8 @@ function App() {
         if (selectedMatch) {
             setSelectedMatch(null);
             e.preventDefault();
+        } else if (searchTerm) {
+            setSearchTerm("");
         }
       }
 
@@ -231,6 +267,17 @@ function App() {
       <header className="navbar glass">
         <div className="navbar-container">
           <Logo />
+          <div className="search-wrapper">
+             <input 
+               ref={searchInputRef}
+               type="text" 
+               placeholder="Buscar películas, series o canales..." 
+               value={searchTerm}
+               onChange={(e) => { setSearchTerm(e.target.value); setFocusedIndex(0); }}
+               className="search-input"
+             />
+             <span className="search-icon">🔍</span>
+          </div>
           <nav className="navbar-menu">
             <div className="category-tabs">
               {CATEGORIAS.map(cat => (
@@ -259,11 +306,17 @@ function App() {
             </div>
           ) : (
             <Grid 
-              matches={matches} 
+              matches={matches.filter(m => {
+                const matchesSearch = (m.equipo_local || "").toLowerCase().includes(searchTerm.toLowerCase());
+                if (activeCategory === "Favoritos") return favorites.includes(m.id) && matchesSearch;
+                return m.categoria === activeCategory && matchesSearch;
+              })} 
               activeCategory={activeCategory} 
               onSelectMatch={handleSelectMatch} 
               selectedMatch={selectedMatch}
               focusedIndex={focusedIndex}
+              favorites={favorites}
+              onToggleFavorite={toggleFavorite}
             />
           )}
         </div>

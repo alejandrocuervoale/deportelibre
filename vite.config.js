@@ -68,6 +68,31 @@ function allProxyPlugin() {
           res.end(JSON.stringify({ error: e.message }));
         }
       });
+
+      // 4. Image Proxy (For Metahub posters)
+      server.middlewares.use('/img-proxy', async (req, res) => {
+        try {
+          const fullUrl = req.originalUrl || req.url;
+          const urlParam = new URL(fullUrl, `http://${req.headers.host}`).searchParams.get('url');
+          if (!urlParam) return res.end('');
+          
+          const imgRes = await fetch(urlParam);
+          res.setHeader('Access-Control-Allow-Origin', '*');
+          res.setHeader('Cache-Control', 'public, max-age=86400');
+          const contentType = imgRes.headers.get('content-type');
+          if (contentType) res.setHeader('Content-Type', contentType);
+          
+          if (imgRes.body) {
+             Readable.fromWeb(imgRes.body).pipe(res);
+          } else {
+             const ab = await imgRes.arrayBuffer();
+             res.end(Buffer.from(ab));
+          }
+        } catch (e) {
+          res.statusCode = 502;
+          res.end('');
+        }
+      });
     }
   }
 }

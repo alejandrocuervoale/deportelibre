@@ -2,8 +2,8 @@ import React from 'react';
 import { Play } from 'lucide-react';
 import MatchCard from './MatchCard';
 
-export default function Grid({ matches, activeCategory, onSelectMatch, selectedMatch, focusedIndex }) {
-    const filteredMatches = matches.filter(m => m.categoria === activeCategory);
+export default function Grid({ matches, activeCategory, onSelectMatch, selectedMatch, focusedIndex, favorites, onToggleFavorite }) {
+    const filteredMatches = matches; // Filtering is now done in App.jsx
 
     return (
         <div className="section-grid-container">
@@ -24,6 +24,8 @@ export default function Grid({ matches, activeCategory, onSelectMatch, selectedM
                             match={match}
                             isActive={selectedMatch?.id === match.id}
                             isFocused={focusedIndex === index}
+                            isFavorite={favorites.includes(match.id)}
+                            onToggleFavorite={onToggleFavorite}
                             onClick={onSelectMatch}
                         />
                     ))}

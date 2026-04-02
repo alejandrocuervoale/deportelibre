@@ -34,10 +34,45 @@ body {
 .navbar-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: 0.8rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 2rem;
+}
+
+.search-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 500px;
+}
+
+.search-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 20px 10px 45px;
+  border-radius: 30px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.search-input:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 15px rgba(229, 9, 20, 0.2);
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  font-size: 0.9rem;
 }
 
 .category-tabs {
@@ -88,7 +123,34 @@ body {
 }
 
 .player-meta h2 { font-size: 1.2rem; margin: 0; }
-.match-tournament { font-size: 0.8rem; color: #aaa; margin: 0; }
+.match-card-tournament {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.category-tag {
+  display: flex;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.fav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: #fff;
+  opacity: 0.5;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fav-btn:hover { opacity: 1; transform: scale(1.2); }
+.fav-btn.active { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 5px rgba(229, 9, 20, 0.5)); }
 
 .playback-mode-toggle {
   display: flex;

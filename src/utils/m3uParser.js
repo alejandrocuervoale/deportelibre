@@ -57,8 +57,8 @@ function parseM3U(text, defaultCategory) {
     } else if (line.startsWith('http') && currentChannel) {
       currentChannel.url = line;
 
-      const nameLower = currentChannel.name.toLowerCase();
-      const groupLower = currentChannel.group.toLowerCase();
+      const nameLower = (currentChannel.name || "Canal").toLowerCase();
+      const groupLower = (currentChannel.group || defaultCategory || "").toLowerCase();
 
       // === CATEGORIZATION ===
       let category = categorizeChannel(nameLower, groupLower, currentChannel.isMovie, defaultCategory);
