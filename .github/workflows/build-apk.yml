@@ -21,18 +21,19 @@ jobs:
           node-version: '20'
 
       - name: Instalar Dependencias del Proyecto
-        run: npm install
+        run: |
+          npm install
+          npm install @capacitor/cli @capacitor/core @capacitor/android
 
       - name: Generar Código de Producción (Vite)
         run: |
           npm run build
           ls -R dist
 
-      - name: Sincronizar Capacitor con Android (Reconstrucción Dinámica)
+      - name: Sincronizar Capacitor con Android (Diagnóstico Profundo)
         run: |
-          rm -rf android
-          npx cap add android
-          npx cap sync android --no-git
+          npx cap doctor
+          npx cap sync android --verbose --no-git
 
       - name: Configurar Java 17
         uses: actions/setup-java@v4
